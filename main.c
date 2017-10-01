@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
     } else if (argv[4] == NULL) {
         fprintf(stderr, "Enter a '1' for encryption, or a '2'\
                 for decryption.");
-    } else if (argv[5] == NULL) {
+    } else if (argv[5] != NULL) {
         fprintf(stderr, "Enter an input file, a key, an output file,\
                 and either a '1' for encryption or a '2' for\
                 decryption.");
@@ -47,10 +47,11 @@ int main(int argc, char** argv) {
     
     /** Number of elements in the file. */
     int size = read_file(argv[1], &file_buffer);
-    printf("After Read: %s", file_buffer);
-    //Encrypt or decrypt
     
-    write_file(argv[2], file_buffer, size);
+    //Encrypt or decrypt
+    fileEncrypt(file_buffer, key);
+    
+    write_file(argv[3], file_buffer, size);
     
     free(file_buffer);
     

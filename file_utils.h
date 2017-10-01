@@ -11,7 +11,7 @@
 
 int read_file( char* filename, char **buffer );
 int write_file( char* filename, char *buffer, int size);
-int fileEncrypt( char* key, char* filename );
+int fileEncrypt( char* buffer, char* key );
 int FileDecrypt( char* key, char* filename );
 
 #endif /* file_utils_h */

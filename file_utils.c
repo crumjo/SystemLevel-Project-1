@@ -6,6 +6,7 @@
 //  Copyright © 2017 Joshua Crum. All rights reserved.
 //
 
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -118,7 +119,18 @@ int write_file( char* filename, char *buffer, int size )
  
  *****************************************************************/
 int fileEncrypt( char* buffer, char* key ) {
+    char* lower_letters = "abcdefghijklmnopqrstuvwxyz";
+    char* upper_letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     
+    size_t len = strlen(key);
+    
+    for (int i = 0; i < len; i++) {
+        if (isupper(key[i])) {
+            printf("UPPER: %c\n", key[i]);
+        } else {
+            printf("lower: %c\n", key[i]);
+        }
+    }
     
     return 0;
 }

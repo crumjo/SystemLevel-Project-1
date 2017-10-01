@@ -9,6 +9,8 @@
 #ifndef file_utils_h
 #define file_utils_h
 
+int read_file( char* filename, char **buffer );
+int write_file( char* filename, char *buffer, int size);
 int fileEncrypt( char* key, char* filename );
 int FileDecrypt( char* key, char* filename );
 

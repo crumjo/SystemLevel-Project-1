@@ -46,7 +46,6 @@ int read_file( char* filename, char **buffer )
         if ( buffer == NULL ) {
             fprintf(stderr, "\nMemory allocation failed.\n");
             return -1;
-            
         }
         
         /** Open the file in read mode. */
@@ -118,17 +117,23 @@ int write_file( char* filename, char *buffer, int size )
 /*****************************************************************
  
  *****************************************************************/
-int fileEncrypt( char* buffer, char* key ) {
-    char* lower_letters = "abcdefghijklmnopqrstuvwxyz";
-    char* upper_letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    
+int fileEncrypt( char* buffer, char* key, int size )
+{
     size_t len = strlen(key);
     
-    for (int i = 0; i < len; i++) {
-        if (isupper(key[i])) {
-            printf("UPPER: %c\n", key[i]);
-        } else {
-            printf("lower: %c\n", key[i]);
+    for (int i = 0; i < size; i++) {
+        int n = buffer[i];
+        
+        if (islower(buffer[i])) {
+            if ((n - 97) <= len) {
+                int x = n - 97;
+                buffer[i] = tolower(key[x]);
+            }
+        } else if (isupper(buffer[i])) {
+            if ((n - 65) <= len) {
+                int y = n - 65;
+                buffer[i] = toupper(key[y]);
+            }
         }
     }
     
@@ -139,7 +144,8 @@ int fileEncrypt( char* buffer, char* key ) {
 /*****************************************************************
  
  *****************************************************************/
-int fileDecrypt( char* key, char* filename ) {
+int fileDecrypt( char* key, char* filename )
+{
     
     return 0;
 }

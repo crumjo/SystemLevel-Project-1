@@ -49,10 +49,10 @@ int main(int argc, char** argv) {
     int size = read_file(argv[1], &file_buffer);
     
     //Encrypt or decrypt
-    fileEncrypt(file_buffer, key);
+    fileEncrypt(file_buffer, key, size);
     
     write_file(argv[3], file_buffer, size);
-    
+        
     free(file_buffer);
     
     return 0;

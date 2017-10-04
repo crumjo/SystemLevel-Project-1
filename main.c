@@ -1,10 +1,10 @@
-//
-//  main.c
-//  Cipher
-//
-//  Created by Joshua Crum on 9/25/17.
-//  Copyright © 2017 Joshua Crum. All rights reserved.
-//
+/*****************************************************************
+ Basic ceasar cipher that can encrypt and decrypt a file given a
+ key. Basic checking for overwrites and memory errors.
+ 
+ @author Joshua Crum
+ @version 10/03/17
+ *****************************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,9 +14,7 @@
 #include "file_utils.h"
 
 
-/*****************************************************************
- 
- *****************************************************************/
+
 int main(int argc, char** argv) {
     
     

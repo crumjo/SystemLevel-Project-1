@@ -115,41 +115,140 @@ int write_file( char* filename, char *buffer, int size )
 
 
 /*****************************************************************
+ Write the contents of the buffer into a new or existing file
+ without checking for overwrites.
  
+ @param filename the name of the output file to write to.
+ @param buffer the char array from which to write.
+ @param size the number of elements to write to the output file.
+ @return int 0 if the code executed correctly, 1 otherwise.
+ *****************************************************************/
+int write_file_unsafe( char* filename, char *buffer, int size )
+{
+    /** Create an output file in write mode. */
+    FILE *out_file = fopen(filename, "w");
+    if (out_file == NULL) {
+        fprintf(stderr, "File open failed.");
+        return -1;
+    }
+    
+    buffer[size] = '\0';
+    fwrite(buffer, sizeof(char), size, out_file);
+    fclose(out_file);
+    
+    return 0;
+}
+
+
+
+/*****************************************************************
+ Encrypt a file given a key.
+ 
+ @param buffer the contents of a file stored in a pointer.
+ @param key the cipher key to use for encryption.
+ @param size the length of the buffer.
+ @return int 0 if the funcion properly executed.
  *****************************************************************/
 int fileEncrypt( char* buffer, char* key, int size )
 {
-    size_t len = strlen(key);
+    size_t key_len = strlen(key) - 1;
+    char* position = (char*)malloc(size * sizeof(char));
     
     for (int i = 0; i < size; i++) {
-        int n = buffer[i];
+        if ((buffer[i] >= 65 && buffer[i] <= 90) || (buffer[i] >= 97 && buffer[i] <= 122)) {
         
-        if (islower(buffer[i])) {
-            if ((n - 97) <= len) {
-                int x = n - 97;
-                buffer[i] = tolower(key[x]);
-            }
-        } else if (isupper(buffer[i])) {
-            if ((n - 65) <= len) {
-                int y = n - 65;
-                buffer[i] = toupper(key[y]);
+            int buff_pos = buffer[i];
+        
+            if (islower(buffer[i])) {
+                if ((buff_pos - 97) <= key_len) {
+                    int x = buff_pos - 97;
+                    buffer[i] = tolower(key[x]);
+                    
+                    sprintf(position + strlen(position), "%d ", i);
+                }
+            
+            } else if (isupper(buffer[i])) {
+                if ((buff_pos - 65) <= key_len) {
+                    int y = buff_pos - 65;
+                    buffer[i] = toupper(key[y]);
+                    
+                    sprintf(position + strlen(position), "%d ", i);
+                }
             }
         }
     }
     
+    write_file_unsafe("position.txt", position, strlen(position));
+    
+    free(position);
     return 0;
 }
 
 
 /*****************************************************************
+ Decrypts a file given a key.
  
+ @param buffer the contents of a file stored in a pointer.
+ @param key the cipher key to use for decryption.
+ @param size the length of the buffer.
+ @return int 0 if the funcion properly executed.
  *****************************************************************/
-int fileDecrypt( char* key, char* filename )
+int fileDecrypt( char* buffer, char* key, int size )
 {
+    size_t key_len = strlen(key);
     
+    char* position = (char*)malloc(sizeof(char));
+    int pos = read_file("position.txt", &position);
+    int* int_position = (int*)malloc(pos * sizeof(int));
+    
+    /** Help from stack overflow reading file into int array. */
+    FILE *pos_file = fopen("position.txt", "r");
+    int array[size];
+    int i = 0, retval;
+    while(i < size && (retval = fscanf(pos_file, "%d", &array[i++])) == 1) ;
+    
+    if(retval == EOF) {
+        if(ferror(pos_file)) {
+            fprintf(stderr, "Read error in stream.");
+            clearerr(pos_file);
+        }
+    }
+    
+    int increment = 0;
+    
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < key_len; j++) {
+            
+            int inc = array[increment];
+            
+            if (i == inc) {
+                if (islower(buffer[i])) {
+                    if (tolower(buffer[i]) == tolower(key[j])) {
+                        int x = buffer[i] - 97;
+                        int y = key[j] - x + j;
+                    
+                        buffer[i] = tolower(y);
+                    
+                        j = key_len + 1;
+                        increment++;
+                    }
+                
+                } else if (isupper(buffer[i])) {
+                    if (toupper(buffer[i]) == toupper(key[j])) {
+                        int x = buffer[i] - 65;
+                        int y = key[j] - x + j;
+                    
+                        buffer[i] = toupper(y);
+                    
+                        j = key_len + 1;
+                        increment++;
+                    }
+                }
+            }
+        }
+    }
+   
+    free(position);
+    free(int_position);
     return 0;
 }
-
-
-
-

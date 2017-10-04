@@ -10,8 +10,9 @@
 #define file_utils_h
 
 int read_file( char* filename, char **buffer );
-int write_file( char* filename, char *buffer, int size);
+int write_file( char* filename, char *buffer, int size );
+int write_file_unsafe( char* filename, char *buffer, int size );
 int fileEncrypt( char* buffer, char* key, int size );
-int FileDecrypt( char* key, char* filename );
+int fileDecrypt( char* buffer, char* key, int size );
 
 #endif /* file_utils_h */

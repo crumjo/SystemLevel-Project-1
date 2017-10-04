@@ -39,7 +39,7 @@ int main(int argc, char** argv) {
     char* key = argv[2];
     
     /** Char pointer to pass to file_read. */
-    char* file_buffer = malloc(sizeof(char));
+    char* file_buffer = (char*)malloc(sizeof(char));
     if (file_buffer == NULL) {
         fprintf( stderr, "\nMemory allocation failed.\n" );
         return -1;
@@ -49,10 +49,15 @@ int main(int argc, char** argv) {
     int size = read_file(argv[1], &file_buffer);
     
     //Encrypt or decrypt
-    fileEncrypt(file_buffer, key, size);
+    if (strcmp(argv[4], "2")) {
+        fileEncrypt(file_buffer, key, size);
+        
+    } else if (strcmp(argv[4], "1")) {
+        fileDecrypt(file_buffer, key, size );
+    }
     
     write_file(argv[3], file_buffer, size);
-        
+    
     free(file_buffer);
     
     return 0;
